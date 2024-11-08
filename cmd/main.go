@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"strconv"
@@ -9,6 +10,7 @@ import (
 
 	"github.com/didikz/gosysmon/internal/server"
 	"github.com/didikz/gosysmon/pkg/util"
+	"github.com/joho/godotenv"
 	"github.com/shirou/gopsutil/v4/cpu"
 	"github.com/shirou/gopsutil/v4/disk"
 	"github.com/shirou/gopsutil/v4/host"
@@ -104,7 +106,12 @@ func main() {
 		}
 	}(s)
 
-	err := http.ListenAndServe(":8000", &s.Mux)
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = http.ListenAndServe(fmt.Sprintf(":%s", os.Getenv("APP_PORT")), &s.Mux)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)

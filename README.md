@@ -15,6 +15,11 @@ Is a simple web based System Monitoring built with Go. It displays computer info
 
 ## Running The Application
 
++ copy env file `cp .env.example .env` and adjust you desire port (default port is `8000`)
++ run the application locally
+
 ```bash
 go run ./cmd/main.go
 ```
+
++ visit `localhost:8000`

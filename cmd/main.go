@@ -128,7 +128,7 @@ func main() {
 			<span hx-swap-oob="innerHTML:#processess">` + processessRow + `</span>
 			`
 			s.Broadcast([]byte(html))
-			time.Sleep(time.Second * 3)
+			time.Sleep(time.Second * 5)
 		}
 	}(s)
 

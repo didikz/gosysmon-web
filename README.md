@@ -4,6 +4,8 @@ Is a simple web based System Monitoring built with Go. It displays computer info
 
 ![alt text](screenshot.png "screenshot of system monitor")
 
+> Learning reference: [https://www.youtube.com/watch?v=fBDUn7b9plw&list=LL&index=3&ab_channel=sigfault](https://www.youtube.com/watch?v=fBDUn7b9plw&list=LL&index=3&ab_channel=sigfault)
+
 ## Stacks
 
 + Go 1.23.1

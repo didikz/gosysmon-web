@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"sort"
 	"strconv"
 	"time"
 
@@ -15,6 +16,7 @@ import (
 	"github.com/shirou/gopsutil/v4/disk"
 	"github.com/shirou/gopsutil/v4/host"
 	"github.com/shirou/gopsutil/v4/mem"
+	"github.com/shirou/gopsutil/v4/process"
 )
 
 func main() {
@@ -83,6 +85,29 @@ func main() {
 				}
 			}
 
+			processess, _ := process.Processes()
+			sort.Slice(processess, func(i, j int) bool {
+				p1, _ := processess[i].CPUPercent()
+				p2, _ := processess[j].CPUPercent()
+				return p1 > p2
+			})
+
+			processessRow := ""
+			for i := 0; i < 10; i++ {
+				n, _ := processess[i].Name()
+				cp, _ := processess[i].CPUPercent()
+				rowColor := ""
+				if i%2 == 0 {
+					rowColor = "bg-gray-500"
+				}
+				processessRow += fmt.Sprintf(`
+                <li class="flex justify-between gap-x-4 py-1 rounded-sm %s">
+                    <span class="mx-2 p-1">%s (PID %d)</span>
+                    <span class="mx-2 p-1">%.2f%% CPU</span>
+                </li>
+                `, rowColor, n, processess[i].Pid, cp)
+			}
+
 			timestamp := time.Now().Format("2006-01-02 15:04:05")
 			html := `
 			<span hx-swap-oob="innerHTML:#data-timestamp">` + timestamp + `</span>
@@ -100,6 +125,7 @@ func main() {
 			<span hx-swap-oob="innerHTML:#disk-total-storage">` + totalStorage + `</span>
 			<span hx-swap-oob="innerHTML:#disk-usage">` + usedStorage + `</span>
 			<span hx-swap-oob="innerHTML:#disk-free">` + freeStorage + `</span>
+			<span hx-swap-oob="innerHTML:#processess">` + processessRow + `</span>
 			`
 			s.Broadcast([]byte(html))
 			time.Sleep(time.Second * 3)

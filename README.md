@@ -1,6 +1,6 @@
 # GoSysMon
 
-Is a simple web based System Monitoring built with Go. It displays computer informations such are host, processes, memory, CPU, and disk. By using websocket, the data will automatically been refreshed within 3 seconds.
+Is a simple web based System Monitoring built with Go. It displays computer informations such are host, processes, memory, CPU, and disk. By using websocket, the data will automatically been refreshed within 5 seconds.
 
 ![alt text](screenshot.png "screenshot of system monitor")
 

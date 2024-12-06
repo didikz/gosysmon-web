@@ -66,22 +66,24 @@ func main() {
 					partitions += fmt.Sprintf(", %s (%s)", partition.Mountpoint, partition.Fstype)
 				}
 
-				if totalStorage == "" {
-					totalStorage = fmt.Sprintf("%s %dGB", partition.Mountpoint, util.BytesToGigabyte(diskUsage.Total))
-				} else {
-					totalStorage += fmt.Sprintf(", %s %dGB", partition.Mountpoint, util.BytesToGigabyte(diskUsage.Total))
-				}
+				if diskUsage != nil {
+					if totalStorage == "" {
+						totalStorage = fmt.Sprintf("%s %dGB", partition.Mountpoint, util.BytesToGigabyte(diskUsage.Total))
+					} else {
+						totalStorage += fmt.Sprintf(", %s %dGB", partition.Mountpoint, util.BytesToGigabyte(diskUsage.Total))
+					}
 
-				if usedStorage == "" {
-					usedStorage = fmt.Sprintf("%s %dGB (%.2f%%)", partition.Mountpoint, util.BytesToGigabyte(diskUsage.Used), diskUsage.UsedPercent)
-				} else {
-					usedStorage += fmt.Sprintf(", %s %dGB (%.2f%%)", partition.Mountpoint, util.BytesToGigabyte(diskUsage.Used), diskUsage.UsedPercent)
-				}
+					if usedStorage == "" {
+						usedStorage = fmt.Sprintf("%s %dGB (%.2f%%)", partition.Mountpoint, util.BytesToGigabyte(diskUsage.Used), diskUsage.UsedPercent)
+					} else {
+						usedStorage += fmt.Sprintf(", %s %dGB (%.2f%%)", partition.Mountpoint, util.BytesToGigabyte(diskUsage.Used), diskUsage.UsedPercent)
+					}
 
-				if freeStorage == "" {
-					freeStorage = fmt.Sprintf("%s %dGB", partition.Mountpoint, util.BytesToGigabyte(diskUsage.Free))
-				} else {
-					freeStorage += fmt.Sprintf(", %s %dGB", partition.Mountpoint, util.BytesToGigabyte(diskUsage.Free))
+					if freeStorage == "" {
+						freeStorage = fmt.Sprintf("%s %dGB", partition.Mountpoint, util.BytesToGigabyte(diskUsage.Free))
+					} else {
+						freeStorage += fmt.Sprintf(", %s %dGB", partition.Mountpoint, util.BytesToGigabyte(diskUsage.Free))
+					}
 				}
 			}
 

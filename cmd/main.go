@@ -1,12 +1,16 @@
 package main
 
 import (
+	"context"
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
+	"os/signal"
 	"sort"
 	"strconv"
+	"syscall"
 	"time"
 
 	"github.com/didikz/gosysmon/internal/server"
@@ -139,9 +143,35 @@ func main() {
 		log.Fatal(err)
 	}
 
-	err = http.ListenAndServe(fmt.Sprintf(":%s", os.Getenv("APP_PORT")), &s.Mux)
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+	port := os.Getenv("APP_PORT")
+	if port == "" {
+		port = "8000"
 	}
+
+	server := &http.Server{
+		Addr:    fmt.Sprintf(":%s", port),
+		Handler: &s.Mux,
+	}
+
+	stop := make(chan os.Signal, 1)
+	signal.Notify(stop, os.Interrupt, syscall.SIGTERM)
+
+	go func() {
+		if err = server.ListenAndServe(); !errors.Is(err, http.ErrServerClosed) {
+			log.Fatal(err)
+		}
+		log.Println("Stopped serving new connections")
+	}()
+
+	<-stop
+	log.Println("Shutting down gracefully...")
+
+	shutdownCtx, shutdownRelease := context.WithTimeout(context.Background(), 10*time.Second)
+	defer shutdownRelease()
+
+	if err := server.Shutdown(shutdownCtx); err != nil {
+		log.Printf("server shutdown error: %v\n", err)
+	}
+
+	log.Println("Server stoppped")
 }
